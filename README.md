@@ -4,7 +4,6 @@ Source code of the Perceptual sample stratification via weighted sliced optimal 
 
 Dependancies:
 =============
- + GSL
  + OpenMP (`brew install libomp` on macOS)
 
 Code compilation:
@@ -19,7 +18,7 @@ Code compilation:
 Code toy execution:
 ===================
 
-    ./WSOT -n 4096 -d 2 -o test.dat
+    ./FSOT -n 4096 -d 2 --method BNED -o test.dat
 
 Generates 1 set of 1 sample per pixel in a 64 by 64 tile in dimension 2, stored in test.dat using default parameters
 
