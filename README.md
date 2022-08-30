@@ -1,4 +1,4 @@
-# Weighted Sliced Optimal Transport
+# Filtered Sliced Optimal Transport
 
 Source code of the Scalable multi-class sampling via filtered sliced optimal transport.
 
