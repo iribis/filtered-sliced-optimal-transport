@@ -115,21 +115,9 @@ inline void chooseDirectionsND_progressive(std::vector<VECTYPE>& directions, int
 
     for (int k = 0; k < m; ++k){
         if(dim == 2){
-            float tmp = unif(generatorND);
-            if(tmp < 1.0){
-                double theta =  (float(k)/m + unif(generatorND)/float(m))*2*PI; // stratified 2D directions
-                directions[k][0] = cos(theta);
-                directions[k][1] = sin(theta);
-            }else{
-                if(tmp < 0.85){
-                    directions[k][0] = 1.0;
-                    directions[k][1] = 0.0;
-                }else{
-                    directions[k][0] = 0.0;
-                    directions[k][1] = 1.0;
-                }
-            }
-
+            double theta =  (float(k)/m + unif(generatorND)/float(m))*2*PI; // stratified 2D directions
+            directions[k][0] = cos(theta);
+            directions[k][1] = sin(theta);
         }else{
             for (int j = 0; j < dim; ++j){
                 directions[k][j] = normalND(generatorND);
@@ -177,8 +165,9 @@ inline void slicedStepNCube_progressive(const VECTYPE& dir, const std::vector<VE
         shift[i] = 0.0f;
     }
 
+    int max_index = int(((float)rand() / RAND_MAX)*nbSubdiv+1)/float(nbSubdiv)*points.size();
     //int max_index = round(std::pow(2.0,(int(((float)rand() / RAND_MAX)*nbSubdiv+1)/float(nbSubdiv)*(log2(points.size())))));
-    int max_index = round(std::pow(2.0,(((float)rand() / RAND_MAX)*(log2(points.size()))+1)));
+    //int max_index = round(std::pow(2.0,(((float)rand() / RAND_MAX)*(log2(points.size()))+1)));
     //std::cout << max_index << std::endl;
     std::vector<std::pair<double, int>> pointsProject;
     project_progressive(points, pointsProject, dir, center, 0, max_index, N);
@@ -229,7 +218,6 @@ inline void slicedOptimalTransportBatchCube_progressive(std::vector<VECTYPE>& po
                                  const std::vector<VECTYPE>& directions,
                                  std::vector<std::vector<double>>& shift,
                                  std::vector<VECTYPE>& finalShift,
-                                 std::vector<VECTYPE>& localShift,
                                  int iter)
  {
 
@@ -253,8 +241,7 @@ inline void slicedOptimalTransportBatchCube_progressive(std::vector<VECTYPE>& po
         for (int k = 0; k < m; ++k) {
             sh += shift[k][i] * directions[k];
         }
-        finalShift[i] = (sh/m) + localShift[i]*0.0;
-        localShift[i] = (sh/m) + localShift[i]*0.0;
+        finalShift[i] = (sh/m);
     }
 
     //Displace points according to accumultiplierated shift
@@ -315,7 +302,6 @@ inline void slicedOptimalTransportNCube_progressive(const std::vector<VECTYPE>& 
 
     //Accumultiplieration shift to be applied later on
     std::vector<std::vector<double>> shift(m, std::vector<double>(pointsOut.size()));
-    std::vector<VECTYPE> localshift(pointsOut.size(), VECTYPE(N));
     std::vector<VECTYPE> finalShift(pointsOut.size(), VECTYPE(N));
 
     std::vector<VECTYPE> directions(m, VECTYPE(N));
@@ -328,7 +314,7 @@ inline void slicedOptimalTransportNCube_progressive(const std::vector<VECTYPE>& 
         }
         chooseDirectionsND_progressive(directions, m, seed);
 
-        slicedOptimalTransportBatchCube_progressive(pointsOut, directions, shift, finalShift,localshift,i);
+        slicedOptimalTransportBatchCube_progressive(pointsOut, directions, shift, finalShift,i);
     }
     print_progress(1.0);
 

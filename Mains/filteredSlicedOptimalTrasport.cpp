@@ -85,6 +85,7 @@ void handleParameters(int argc,
             cerr << "\t--tileSize <imageSpaceSize> (default 64): Specifies the tile size" << endl;
             cerr << "\t-s <seed> (default 133742): Specifies the random seed" << endl;
             cerr << "\t-d <dimension> (default 2): Specifies samples dimension" << endl;
+            cerr << "\t--nbSubdiv <subdivision> (default 1): Specifies the number of sibdivisions for the progressive optimization" << endl;
             cerr << "\t--method <sampling method> (default BNED): BNED (Blue Noise Error Distribution), progressive, image, stippling, twoclass or SOT" << endl;
             cerr << "\t--silent (optional): Cancels all outputs other than the points and errors" << endl;
             cerr << "\t" << endl;
