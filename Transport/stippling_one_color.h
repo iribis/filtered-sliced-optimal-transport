@@ -18,26 +18,6 @@
 #include <sstream> // stringstream
 
 const int multiplier_pointset_images_stippling = 5;
-//const int w_stippling = 400;
-//const int h_stippling = 400;
-
-//const int w_stippling = 163;
-//const int h_stippling = 215;
-
-//const int w_stippling = 214;// groix ch_stipplingat
-//const int h_stippling = 320;
-
-//const int w_stippling = 600;// iliyan
-//const int h_stippling = 600;
-
-//const int w_stippling = 360;// land
-//const int h_stippling = 640;
-
-//const int w_stippling = 354;
-//const int h_stippling = 531;
-
-//const int w_stippling = 326;//booby
-//const int h_stippling = 188;
 
 const int w_stippling = 384;//memorial
 const int h_stippling = 256;
@@ -47,64 +27,6 @@ float image_stippling_CDF[w_stippling][h_stippling][2];
 float cumulativeimage_stippling[w_stippling][2];
 float sum_stippling[2];
 
-/*
-void readimage_stippling(){
-    int row = 0, col = 0, numrows = 0, numcols = 0, max_val = 256;
-    for(int c=0; c<1;++c){
-        //std::ifstream infile((std::string("../resources/groix_chat_")+std::to_string(c).c_str()+std::string(".pgm")).c_str());
-        //std::ifstream infile((std::string("../resources/booby_input_P2.pgm")).c_str());//
-        std::ifstream infile((std::string("../resources/memorial_P2.pgm")).c_str());//
-        std::stringstream ss;
-        std::string inputLine = "";
-
-        // First line : version
-        getline(infile,inputLine);
-        if(inputLine.compare("P2") != 0) std::cerr << "Version error" << std::endl;
-        else std::cout << "Version : " << inputLine << std::endl;
-
-        // Second line : comment
-        //getline(infile,inputLine);
-        //std::cout << "Comment : " << inputLine << std::endl;
-
-        // Continue with a stringstream
-        ss << infile.rdbuf();
-        // Third line : size
-        ss >> numcols >> numrows;
-        std::cout << numcols << " columns and " << numrows << " rows" << std::endl;
-        ss >> max_val;
-        std::cout << max_val << " max value" << std::endl;
-        // Following lines : data
-        for(row = 0; row < numrows; ++row)
-            for (col = 0; col < numcols; ++col) ss >> image_stippling[row][col][c];
-
-        // Now print the array to see the result
-        infile.close();
-
-        for(row = 0; row < numrows; ++row){
-            for (col = 0; col < numcols; ++col){
-                //if(image_stippling[row][col][c]<10)
-                //    image_stippling[row][col][c] = 0.0;
-                image_stippling[row][col][c] = 255 - int((image_stippling[row][col][c]/float(max_val))*255);
-            }
-
-        }
-        sum_stippling[c] = 0;
-        for(row = 0; row < numrows; ++row){
-            float cumulative = 0;
-            for (col = 0; col < numcols; ++col){
-                cumulative += image_stippling[row][col][c];
-            }
-            cumulativeimage_stippling[row][c] = cumulative;
-            sum_stippling[c] += cumulative;
-        }
-    }
-    std::cout << sum_stippling[0]<<std::endl;
-    //std::cout << (sum_stippling[0]/(sum_stippling[0]+sum_stippling[1]+sum_stippling[2]))<<std::endl;
-    //std::cout << ((sum_stippling[0]+sum_stippling[1])/(sum_stippling[0]+sum_stippling[1]+sum_stippling[2]))<<std::endl;
-
-    //double div = sum_stippling[0]+sum_stippling[1]+sum_stippling[2]+sum_stippling[3]+sum_stippling[4]+sum_stippling[5]+sum_stippling[6]+sum_stippling[7]+sum_stippling[8];
-    
-}*/
 
 void readimage_stippling(){
     int row = 0, col = 0, numrows = 0, numcols = 0, max_val = 256;
@@ -119,10 +41,6 @@ void readimage_stippling(){
         getline(infile,inputLine);
         if(inputLine.compare("P2") != 0) std::cerr << "Version error" << std::endl;
         else std::cout << "Version : " << inputLine << std::endl;
-
-        // Second line : comment
-        //getline(infile,inputLine);
-        //std::cout << "Comment : " << inputLine << std::endl;
 
         // Continue with a stringstream
         ss << infile.rdbuf();
@@ -141,8 +59,6 @@ void readimage_stippling(){
         for(row = 0; row < numrows; ++row){
             cumulat = 0;
             for (col = 0; col < numcols; ++col){
-                //if(image_stippling[row][col][c]<10)
-                //    image_stippling[row][col][c] = 0.0;
                 image_stippling[row][col][c] = 255 - int((image_stippling[row][col][c]/float(max_val))*255);
                 image_stippling_CDF[row][col][c] = cumulat + image_stippling[row][col][c];
                 cumulat += image_stippling[row][col][c];
@@ -176,52 +92,7 @@ void project_stippling(const std::vector<VECTYPE>& points, std::vector<std::pair
     }
 
 }
-/*
-template <class VECTYPE>
-inline void getInverseimage_stippling(int D, int nbSamples, std::vector<double>& pos,VECTYPE dir,VECTYPE offset, int selector){
 
-    pos.resize(nbSamples);
-    std::vector<double> posbis;
-    posbis.resize(nbSamples*multiplier_pointset_images_stippling);
-    for (int i = 0; i < nbSamples*multiplier_pointset_images_stippling; ++i){
-        int img = 0;
-        VECTYPE p;
-        float rnd1 = ((float)rand() / RAND_MAX)*sum_stippling[img];
-        float cum = 0;
-        float x = 0;
-        float y = 0;
-        for (int j = 0; j < w_stippling; j++)
-        {
-            if(cum+cumulativeimage_stippling[j][img]>=rnd1){
-                x = j;
-                break;
-            }
-            cum+=cumulativeimage_stippling[j][img];
-        }
-        
-        float rnd2 = ((float)rand() / RAND_MAX)*cumulativeimage_stippling[int(x)][img];
-        cum = 0;
-        for (int j = 0; j < h_stippling; j++)
-        {
-            if(cum+image_stippling[int(x)][j][img]>=rnd2){
-                y = j;
-                break;
-            }
-            cum+=image_stippling[int(x)][j][img];
-        }
-
-        p[1] = (1-(x+((float)rand() / RAND_MAX))/w_stippling)*w_stippling/std::max(w_stippling,h_stippling);
-        p[0] = ((y+((float)rand() / RAND_MAX))/h_stippling)*h_stippling/std::max(w_stippling,h_stippling);
-
-        posbis[i] = p*dir;
-    }
-    std::sort(posbis.begin(),posbis.end());
-    for (int i = 0; i < nbSamples; i++)
-    {
-        pos[i] = posbis[i*multiplier_pointset_images_stippling + int(multiplier_pointset_images_stippling/2)];
-    }
-    
-}*/
 
 template <class VECTYPE>
 inline void getInverseimage_stippling(int D, int nbSamples, std::vector<double>& pos,VECTYPE dir,VECTYPE offset, int selector){
@@ -242,8 +113,6 @@ inline void getInverseimage_stippling(int D, int nbSamples, std::vector<double>&
         int mid = (low+up)/2;
         while(up-low > 1){
             mid = (low+up)/2;
-            //std::cout << low << std::endl;
-            //std::cout << cumulativeimage_stippling[mid][img] << "  " << rnd1 << std::endl;
             if(cumulativeimage_stippling[mid][img]<=rnd1){
                 low = mid;
             }else{
@@ -266,7 +135,6 @@ inline void getInverseimage_stippling(int D, int nbSamples, std::vector<double>&
         mid = (low+up)/2;
         while(up-low > 1){
             mid = (low+up)/2;
-            //std::cout << image_stippling_CDF[int(x)][mid][img] << "  " << rnd2 << std::endl;
             if(image_stippling_CDF[int(x)][mid][img]<=rnd2){
                 low = mid;
             }else{
@@ -283,7 +151,6 @@ inline void getInverseimage_stippling(int D, int nbSamples, std::vector<double>&
 
         p[1] = (1-(x+((float)rand() / RAND_MAX))/w_stippling)*w_stippling/std::max(w_stippling,h_stippling);
         p[0] = ((y+((float)rand() / RAND_MAX))/h_stippling)*h_stippling/std::max(w_stippling,h_stippling);
-        //std::cout << y << std::endl;
         posbis[i] = p*dir;
     }
 

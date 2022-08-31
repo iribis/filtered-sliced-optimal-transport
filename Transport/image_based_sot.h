@@ -30,14 +30,9 @@ const int multiplier_pointset_images = 3;
 //const int w = 600;// iliyan
 //const int h = 600;
 
-//const int w = 360;// land
-//const int h = 640;
+const int w = 267;// land
+const int h = 400;
 
-//const int w = 240;//elephants
-//const int h = 180;
-
-const int w = 188;//booby
-const int h = 326;
 
 float image[w][h][6];
 float cumulativeImage[w][6];
@@ -55,10 +50,6 @@ void readImage(){
         getline(infile,inputLine);
         if(inputLine.compare("P2") != 0) std::cerr << "Version error" << std::endl;
         else std::cout << "Version : " << inputLine << std::endl;
-
-        // Second line : comment
-        //getline(infile,inputLine);
-        //std::cout << "Comment : " << inputLine << std::endl;
 
         // Continue with a stringstream
         ss << infile.rdbuf();
@@ -92,11 +83,7 @@ void readImage(){
         }
     }
 
-    //std::cout << (sum[0]/(sum[0]+sum[1]+sum[2]))<<std::endl;
-    //std::cout << ((sum[0]+sum[1])/(sum[0]+sum[1]+sum[2]))<<std::endl;
-
-    //double div = sum[0]+sum[1]+sum[2]+sum[3]+sum[4]+sum[5]+sum[6]+sum[7]+sum[8];
-    double div = sum[0]+sum[1]+sum[2]+sum[3];//+sum[4];//+sum[5];
+    double div = sum[0]+sum[1]+sum[2]+sum[3];
     double tmp = 0;
     for (size_t i = 0; i < 4; i++)
     {
