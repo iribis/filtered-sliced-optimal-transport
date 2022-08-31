@@ -6,7 +6,7 @@ import cv2 as cv
 
 # Create data
 colors = (0,0,0)
-area = np.pi*3*4*4/8
+area = int(np.pi*3*4*3*3*2)
 
 x = np.zeros([65536])
 y = np.zeros([65536])
@@ -32,8 +32,8 @@ plt.scatter(x[int(u*float(sys.argv[3])):int(u*float(sys.argv[4]))], y[int(u*floa
 plt.scatter(x[int(u*float(sys.argv[4])):int(u*float(sys.argv[5]))], y[int(u*float(sys.argv[4])):int(u*float(sys.argv[5]))], s=area, c=(1.0,1.0,0.0), alpha=1.0)
 plt.scatter(x[int(u*float(sys.argv[5])):int(u*float(sys.argv[6]))], y[int(u*float(sys.argv[5])):int(u*float(sys.argv[6]))], s=area, c=(0.0,0.0,0.0), alpha=1.0)
 
-ax.set_xlim([0.0, 0.7])
-ax.set_ylim([0.0, 1.0])
+#ax.set_xlim([0.0, 0.7])
+#ax.set_ylim([0.0, 1.0])
 
 ax.set_yticklabels([])
 ax.set_xticklabels([])

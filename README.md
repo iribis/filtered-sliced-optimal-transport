@@ -25,6 +25,7 @@ This sample-set can then be used in a renderer to produce blue noise error distr
 
 This code is based on that of https://github.com/loispaulin/Sliced-Optimal-Transport-Sampling. We thank them for their work and recommend reading their article "Sliced Optimal Transport Sampling".
 
+## Examples
 Toy example two color example:
 ===================
 
@@ -42,7 +43,8 @@ Toy example Progressive sample:
 Toy example Image stippling:
 ===================
 
-    ./FSOT -n 1024 --nbproj 256 --method image -o ../results/image.dat
+    ./FSOT -n 8192 -p 800 --nbproj 256 --method image -o ../results/image.dat
+    python3 ../render_color_img.py ../results/image.dat ../results/image.png 0.165895 0.308232 0.478844 1.0
 
 Toy example monochrome stippling:
 ===================

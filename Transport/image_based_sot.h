@@ -66,11 +66,8 @@ void readImage(){
 
         for(row = 0; row < numrows; ++row){
             for (col = 0; col < numcols; ++col){
-                //if(image[row][col][c]<10)
-                //    image[row][col][c] = 0.0;
                 //image[row][col][c] = 1.0 - image[row][col][c]/255.0;
             }
-
         }
         sum[c] = 0;
         for(row = 0; row < numrows; ++row){
@@ -335,7 +332,6 @@ inline void getInverseImage(int D, int nbSamples, std::vector<double>& pos,VECTY
 
         p[1] = (1-(x+((float)rand() / RAND_MAX))/w)*w/std::max(w,h);
         p[0] = ((y+((float)rand() / RAND_MAX))/h)*h/std::max(w,h);
-
         posbis[i] = p*dir;
     }
     std::sort(posbis.begin(),posbis.end());
