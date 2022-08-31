@@ -18,20 +18,9 @@
 #include <sstream> // stringstream
 
 const int multiplier_pointset_images = 3;
-//const int w = 320;
-//const int h = 400;
 
-//const int w = 163;
-//const int h = 215;
-
-//const int w = 214;// groix chat
-//const int h = 320;
-
-//const int w = 600;// iliyan
-//const int h = 600;
-
-const int w = 267;// land
-const int h = 400;
+const int w = 450;// colored_sea
+const int h = 227;
 
 
 float image[w][h][6];

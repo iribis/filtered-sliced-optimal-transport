@@ -6,7 +6,7 @@ import cv2 as cv
 
 # Create data
 colors = (0,0,0)
-area = int(np.pi*3*4*3*3*2)
+area = int(np.pi*3*4*2*3*2*2)
 
 x = np.zeros([65536])
 y = np.zeros([65536])
@@ -24,7 +24,7 @@ for t in f:
 
 print(u)
 
-fig = plt.figure(figsize=(int(np.sqrt(u)*1.5/2), int(np.sqrt(u)/2)), dpi=80)
+fig = plt.figure(figsize=(int(np.sqrt(u)/2), int(np.sqrt(u)*2/2)), dpi=80)
 ax = fig.add_subplot(1, 1, 1)
 
 plt.scatter(x[0:int(u*float(sys.argv[3]))], y[0:int(u*float(sys.argv[3]))], s=area, c=(0,1,1), alpha=1.0)
