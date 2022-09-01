@@ -29,7 +29,7 @@ This code is based on that of https://github.com/loispaulin/Sliced-Optimal-Trans
 Toy example Blue noise error distribution:
 ===================
 
-    ./FSOT -n 4096 --step 2048 --tileSize 64 -d 2 --method BNED -o test.dat
+    ./FSOT -n 4096 --step 2048 --tileSize 64 -d 2 --method BNED -o tile_BNED_64_64_1spp.dat
 
 
 Toy example two color example:
