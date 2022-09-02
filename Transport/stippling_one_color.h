@@ -16,67 +16,91 @@
 #include "../Tools/my_utility.h"
 #include <fstream> // ifstream
 #include <sstream> // stringstream
+#include <string>
+
+#include "../Tools/lodepng.h"
 
 const int multiplier_pointset_images_stippling = 5;
 
-const int w_stippling = 384;//memorial
-const int h_stippling = 256;
+int w_stippling = 10000;
+int h_stippling = 10000;
 
-float image_stippling[w_stippling][h_stippling][2];
-float image_stippling_CDF[w_stippling][h_stippling][2];
-float cumulativeimage_stippling[w_stippling][2];
-float sum_stippling[2];
+std::vector<std::vector<std::vector<float>>> image_stippling;
+std::vector<std::vector<std::vector<float>>> image_stippling_CDF;
+std::vector<std::vector<float>> cumulativeimage_stippling;
+std::vector<float> sum_stippling;
 
+void decodeOneStep(const char* filename) {
+  int row = 0, col = 0, numrows = 0, numcols = 0, max_val = 256;
+  std::vector<unsigned char> image; //the raw pixels
+  unsigned width, height;
 
-void readimage_stippling(){
-    int row = 0, col = 0, numrows = 0, numcols = 0, max_val = 256;
-    for(int c=0; c<1;++c){
-        //std::ifstream infile((std::string("../resources/groix_chat_")+std::to_string(c).c_str()+std::string(".pgm")).c_str());
-        //std::ifstream infile((std::string("../resources/booby_input_P2.pgm")).c_str());//
-        std::ifstream infile((std::string("../resources/memorial_P2.pgm")).c_str());//
-        std::stringstream ss;
-        std::string inputLine = "";
+  //decode
+  unsigned error = lodepng::decode(image, width, height, filename);
 
-        // First line : version
-        getline(infile,inputLine);
-        if(inputLine.compare("P2") != 0) std::cerr << "Version error" << std::endl;
-        else std::cout << "Version : " << inputLine << std::endl;
-
-        // Continue with a stringstream
-        ss << infile.rdbuf();
-        // Third line : size
-        ss >> numcols >> numrows;
-        std::cout << numcols << " columns and " << numrows << " rows" << std::endl;
-        ss >> max_val;
-        std::cout << max_val << " max value" << std::endl;
-        // Following lines : data
-        for(row = 0; row < numrows; ++row)
-            for (col = 0; col < numcols; ++col) ss >> image_stippling[row][col][c];
-
-        // Now print the array to see the result
-        infile.close();
-        float cumulat = 0;
-        for(row = 0; row < numrows; ++row){
-            cumulat = 0;
-            for (col = 0; col < numcols; ++col){
-                image_stippling[row][col][c] = 255 - int((image_stippling[row][col][c]/float(max_val))*255);
-                image_stippling_CDF[row][col][c] = cumulat + image_stippling[row][col][c];
-                cumulat += image_stippling[row][col][c];
-            }
-
-        }
-        sum_stippling[c] = 0;
-        cumulat = 0;
-        for(row = 0; row < numrows; ++row){
-            float cumulative = 0;
-            for (col = 0; col < numcols; ++col){
-                cumulative += image_stippling[row][col][c];
-            }
-            cumulativeimage_stippling[row][c] = cumulat + cumulative;
-            cumulat += cumulative;
-            sum_stippling[c] = cumulativeimage_stippling[row][c];
-        }
+  //if there's an error, display it
+  if(error){
+    std::cout << "decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+  }else{
+    std::cout << "Image loaded : w(" << width <<"), h("<< height << "), img[0]=" << int(image[0]) << ", img.size("<<image.size()<<")" <<std::endl;
+  }
+  w_stippling = width;
+  h_stippling = height;
+  numrows = width;
+  numcols = height;
+  sum_stippling = std::vector<float>(2);
+  cumulativeimage_stippling = std::vector<std::vector<float>>(width);
+  image_stippling_CDF = std::vector<std::vector<std::vector<float>>>(width);
+  image_stippling = std::vector<std::vector<std::vector<float>>>(width);
+  for (size_t j = 0; j < width; j++)
+  {
+    cumulativeimage_stippling[j] = std::vector<float>(2);
+  }
+  for (size_t i = 0; i < width; i++){
+        image_stippling_CDF[i] = std::vector<std::vector<float>>(height);
+        image_stippling[i] = std::vector<std::vector<float>>(height);
+    for (size_t j = 0; j < height; j++){
+        image_stippling_CDF[i][j] = std::vector<float>(2);
+        image_stippling[i][j] = std::vector<float>(2);
     }
+  }
+  for(row = 0; row < width; ++row){
+    for (col = 0; col < height; ++col){
+        image_stippling[row][col][0] = int(image[4*(col*width+row)]);
+        image_stippling[row][col][1] = int(image[4*(col*width+row)]);
+    }
+  }
+  for (int c = 0; c < 2; ++c){
+    // Now print the array to see the result
+    float cumulat = 0;
+    for(row = 0; row < numrows; ++row){
+        cumulat = 0;
+        for (col = 0; col < numcols; ++col){
+            image_stippling[row][col][c] = 255 - int((image_stippling[row][col][c]/float(max_val))*255);
+            image_stippling_CDF[row][col][c] = cumulat + image_stippling[row][col][c];
+            cumulat += image_stippling[row][col][c];
+        }
+
+    }
+    sum_stippling[c] = 0;
+    cumulat = 0;
+    for(row = 0; row < numrows; ++row){
+        float cumulative = 0;
+        for (col = 0; col < numcols; ++col){
+            cumulative += image_stippling[row][col][c];
+        }
+        cumulativeimage_stippling[row][c] = cumulat + cumulative;
+        cumulat += cumulative;
+        sum_stippling[c] = cumulativeimage_stippling[row][c];
+    }
+  }
+  std::cout << "end loading" << std::endl;
+  //the pixels are now in the vector "image", 4 bytes per pixel, ordered RGBARGBA..., use it as texture, draw it, ...
+}
+
+void readimage_stippling(const char* filename){
+    decodeOneStep(filename);
+
 }
 
 
@@ -149,8 +173,8 @@ inline void getInverseimage_stippling(int D, int nbSamples, std::vector<double>&
             y = up;
         }
 
-        p[1] = (1-(x+((float)rand() / RAND_MAX))/w_stippling)*w_stippling/std::max(w_stippling,h_stippling);
-        p[0] = ((y+((float)rand() / RAND_MAX))/h_stippling)*h_stippling/std::max(w_stippling,h_stippling);
+        p[0] = ((x+((float)rand() / RAND_MAX))/w_stippling)*w_stippling/std::max(w_stippling,h_stippling);
+        p[1] = (1-(y+((float)rand() / RAND_MAX))/h_stippling)*h_stippling/std::max(w_stippling,h_stippling);
         posbis[i] = p*dir;
     }
 
@@ -308,12 +332,12 @@ inline void slicedOptimalTransportNStippling(const std::vector<VECTYPE>& pointsI
                                         std::vector<VECTYPE>& pointsOut,
                                         int nbIter,
                                         int m,
-                                        int seed, bool silent = false)
+                                        int seed, const char* inPrefix, bool silent)
 {
 
     int N = pointsIn.front().dim();
     pointsOut = pointsIn;
-    readimage_stippling();
+    readimage_stippling(inPrefix);
     //Accumulation shift to be applied later on
     std::vector<std::vector<double>> shift(m, std::vector<double>(pointsOut.size()));
     std::vector<VECTYPE> finalShift(pointsOut.size(), VECTYPE(N));

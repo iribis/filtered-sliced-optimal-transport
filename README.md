@@ -55,7 +55,7 @@ Toy example Image stippling:
 Toy example monochrome stippling:
 ===================
 
-    ./FSOT -n 8192 -p 500 --nbproj 256 --method stippling -o ../results/stippling.dat
+    ./FSOT -n 8192 -p 500 --nbproj 256 --method stippling -i ../resources/elephants.png -o ../results/stippling.dat
     python3 ../render_stippling.py ../results/stippling.dat ../results/stippling.png
 
 

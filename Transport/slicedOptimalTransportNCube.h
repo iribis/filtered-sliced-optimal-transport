@@ -246,9 +246,6 @@ inline void slicedOptimalTransportBatchCube(std::vector<VECTYPE>& pointsOut,
 #pragma omp parallel for
     for (int i = 0; i < nbPoints; ++i) {
         pointsOut[i] += finalShift[i];
-        int spp = nbPoints / (tileSize * tileSize);
-        double x = int((i / spp) / tileSize);
-        double y = int((i / spp) % tileSize);
 
         for(int d = 0; d<finalShift[i].dim(); ++d){
             while(pointsOut[i][d]<0){

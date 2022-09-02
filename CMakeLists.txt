@@ -10,6 +10,7 @@ ADD_LIBRARY(SOURCES
         Transport/progressive_sampler.h
         Transport/image_based_sot.h
         Tools/my_utility.cpp
+        Tools/lodepng.cpp
         Math/myMath.cpp
         )
 

@@ -25,7 +25,8 @@ void usage(const char **argv){
     cerr << argv[0] << " [-o <OutputFileName>] "
                        "[-n <nbPoints>] [-m <nbRealisations>] [-p <nbIteration>]"
                        "[--nbproj <nbDirectionPerStep>] [-s <seed>] [-d <dimension>]" 
-                       "[--tileSize <imageSpaceSize>] [--method <method>]"<< endl;
+                       "[--tileSize <imageSpaceSize>] [--method <method>]"
+                       "[-i <InputFileName>]" << endl;
 }
 
 void handleParameters(int argc,
@@ -40,11 +41,15 @@ void handleParameters(int argc,
                       int& tileSize,
                       bool& silent,
                       string& method,
-                      int& nbSubdiv){
+                      int& nbSubdiv,
+                      string& inPrefix){
     int i = 1;
     while (i < argc){
         if (!strncmp(argv[i], "-o", 2)) {
             outPrefix = (argv[i+1]);
+            ++i;
+        } else if (!strncmp(argv[i], "-i", 2)) {
+            inPrefix = (argv[i+1]);
             ++i;
         } else if (!strncmp(argv[i], "--method", 8)) {
             method = (argv[i+1]);
@@ -85,6 +90,7 @@ void handleParameters(int argc,
             cerr << "\t--tileSize <imageSpaceSize> (default 64): Specifies the tile size" << endl;
             cerr << "\t-s <seed> (default 133742): Specifies the random seed" << endl;
             cerr << "\t-d <dimension> (default 2): Specifies samples dimension" << endl;
+            cerr << "\t-i <InputFileName> (default none): Specifies an input png file (only for stippling)" << endl;
             cerr << "\t--nbSubdiv <subdivision> (default 1): Specifies the number of sibdivisions for the progressive optimization" << endl;
             cerr << "\t--method <sampling method> (default BNED): BNED (Blue Noise Error Distribution), progressive, image, stippling, twoclass or SOT" << endl;
             cerr << "\t--silent (optional): Cancels all outputs other than the points and errors" << endl;
@@ -113,11 +119,12 @@ int main_template(int argc, const char **argv) {
     int nbSubdiv = 1;
     //Default parameters value
     string outPrefix = "";
+    string inPrefix = "";
     string method = "BNED";
     int seed = 133742;
     bool silent = false;
 
-    handleParameters(argc, argv, outPrefix, nbIter, m, p, seed, nbPointsets, dim, tileSize, silent, method, nbSubdiv);
+    handleParameters(argc, argv, outPrefix, nbIter, m, p, seed, nbPointsets, dim, tileSize, silent, method, nbSubdiv,inPrefix);
     if((p/(tileSize*tileSize) != p/double(tileSize*tileSize)) && method == "BNED"){
         std::cout << "number of sample ("<< p <<") is not matching with the tile size (" << tileSize << ")"<< std::endl;
         return 0;
@@ -162,7 +169,7 @@ int main_template(int argc, const char **argv) {
             }else if(method == "twoclass"){
                 slicedOptimalTransportNCube_two_class(points, result, nbIter, m, seed, tileSize, silent, nbSubdiv);
             }else if(method == "stippling"){
-                slicedOptimalTransportNStippling(points, result, nbIter, m, seed, silent); 
+                slicedOptimalTransportNStippling(points, result, nbIter, m, seed, (inPrefix).c_str(), silent); 
             }else{
                 std::cout << "Error: not findind the method" << std::endl;
             }

@@ -19,7 +19,7 @@ for t in f:
     y[int(count)] = float(line[1])
     count += 1
 
-fig = plt.figure(figsize=(int(np.sqrt(count)/1.5/4), int(np.sqrt(count))/4), dpi=80)
+fig = plt.figure(figsize=(int(np.sqrt(count)/4), int(np.sqrt(count))/1.5/4), dpi=80)
 ax = fig.add_subplot(1, 1, 1)
 
 plt.scatter(x[:count], y[:count],s=area, c=(0,0,0))
