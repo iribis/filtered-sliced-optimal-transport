@@ -1,6 +1,8 @@
 # Filtered Sliced Optimal Transport
 
-Source code of the Scalable multi-class sampling via filtered sliced optimal transport.
+Source code of the Scalable multi-class sampling via filtered sliced optimal transport. This example is for demonstration purposes and has not been optimized. It is fully CPU based with a parallelization via OpenMP.
+
+In case of problems or bugs don't hesitate to contact me I will do my best to solve your problem.
 
 Dependancies:
 =============
