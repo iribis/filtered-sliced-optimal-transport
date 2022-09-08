@@ -227,5 +227,44 @@ inline void chooseDirectionsND(std::vector<VECTYPE>& directions, int m, int seed
     }
 }
 
+template <class VECTYPE>
+void export_sampler(const std::vector<VECTYPE>& points, std::string filename, int tile_size, int spp){
+    int dim = points.front().dim();
+    std::ofstream myfile (filename,std::ios::trunc);
+    if (myfile.is_open())
+    {
+        myfile << "#pragma once\n\n\n";
+        myfile << "const float tile["<<tile_size<<"]["<<tile_size*spp*dim<<"] = {";
+        for (size_t i = 0; i < tile_size; i++)
+        {
+            if(i==0){myfile <<"{";}
+            else{myfile <<",{";}
+            
+            for (size_t j = 0; j < tile_size; j++)
+            {
+                
+                for (size_t k = 0; k < spp; k++)
+                {
+                    for (size_t d = 0; d < dim; d++)
+                    {
+                        if(j==0 && k == 0 && d==0){myfile <<points[(i*tile_size+j)*spp+k][d];}
+                        else{myfile <<","<<points[(i*tile_size+j)*spp+k][d];}
+                    }
+                }
+                
+            }
+            myfile <<"}";
+        }
+        myfile <<"};";
+        myfile <<"\n\n\n";
+        myfile <<"float sample(int i, int j, int s, int d){\n";
+        myfile <<"\treturn tile[i%"<<tile_size<<"][(j%"<<tile_size<<")*"<<spp<<"*"<<dim<<"+(s%"<<spp<<")*"<<dim<<"+(d%"<<dim<<")];\n";
+        myfile <<"}\n";
+        myfile.close();
+    }
+    
+}
+
+
 
 #endif //SLICEDOPTIM_MY_UTILITY_H

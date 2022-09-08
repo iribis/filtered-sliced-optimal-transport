@@ -162,6 +162,12 @@ int main_template(int argc, const char **argv) {
                 slicedOptimalTransportNCube(points, result, nbIter, m, seed, 1, silent);
             }if(method == "BNED"){
                 slicedOptimalTransportNCube(points, result, nbIter, m, seed, tileSize, silent);
+                //export the result
+                size_t lastindex = outPrefix.find_last_of("."); 
+                std::string rawname = outPrefix.substr(0, lastindex);
+                std::stringstream file_name;
+                file_name <<rawname<<".h";
+                export_sampler(result,std::string(file_name.str()),tileSize,p/(tileSize*tileSize));
             }else if(method == "progressive"){
                 slicedOptimalTransportNCube_progressive(points, result, nbIter, m, seed, tileSize, silent, nbSubdiv);
             }else if(method == "image"){
