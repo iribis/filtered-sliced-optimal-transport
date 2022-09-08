@@ -30,7 +30,6 @@ float sum[6];
 void readImage(){
     int row = 0, col = 0, numrows = 0, numcols = 0;
     for(int c=0; c<4;++c){
-        //std::ifstream infile((std::string("../resources/groix_chat_")+std::to_string(c).c_str()+std::string(".pgm")).c_str());
         std::ifstream infile((std::string("../resources/land_")+std::to_string(c).c_str()+std::string(".pgm")).c_str());
         std::stringstream ss;
         std::string inputLine = "";
@@ -82,25 +81,7 @@ void readImage(){
 
 
 bool select(double indice_ratio, int selector){
-    /*
-    if(selector == 0){
-        return indice_ratio < (sum[0]/(sum[0]+sum[1]+sum[2]));
-    }else if(selector == 1){
-        return indice_ratio < ((sum[0] + sum[1] )/(sum[0]+sum[1]+sum[2])) && indice_ratio > ((sum[0])/(sum[0]+sum[1]+sum[2]));
-    }else if(selector == 4){
-        return indice_ratio > ((sum[0] + sum[1] )/(sum[0]+sum[1]+sum[2]));
-    }else if(selector == 2 || selector == 3){
-        return indice_ratio < ((sum[0] + sum[1] )/(sum[0]+sum[1]+sum[2]));
-    }else if(selector == 5 || selector == 6){
-        return indice_ratio > ((sum[0])/(sum[0]+sum[1]+sum[2]));
-    }else if(selector == 7 || selector == 8){
-        return indice_ratio > ((sum[0] + sum[1] )/(sum[0]+sum[1]+sum[2])) || indice_ratio < (sum[0]/(sum[0]+sum[1]+sum[2]));
-    }else{
-        return true;
-    }
-    */
-    //double div = sum[0]+sum[1]+sum[2]+sum[3]+sum[4]+sum[5]+sum[6]+sum[7]+sum[8];
-    double div = sum[0]+sum[1]+sum[2]+sum[3];//+sum[4];
+    double div = sum[0]+sum[1]+sum[2]+sum[3];
     if(selector == 0){
         return indice_ratio < (sum[0]/(div));
     }else if(selector == 1){
@@ -129,18 +110,7 @@ bool select(double indice_ratio, int selector){
         return indice_ratio > ((sum[0])/(div));
     }else if(selector == 13){
         return (indice_ratio < (sum[0])/(div))||(indice_ratio < (sum[0] + sum[1] + sum[2] + sum[3])/(div) && indice_ratio > ((sum[0]+sum[1])/(div)));
-    }
-    /*else if(selector == 4){
-        return indice_ratio < (sum[0] + sum[1] + sum[2] + sum[3]+ sum[4])/(div) && indice_ratio > ((sum[0]+sum[1]+ sum[2]+ sum[3])/(div));
-    }else if(selector == 5){
-        return indice_ratio < (sum[0] + sum[1] + sum[2] + sum[3]+ sum[4]+ sum[5])/(div) && indice_ratio > ((sum[0]+sum[1]+ sum[2]+ sum[3]+ sum[4])/(div));
-    }else if(selector == 6){
-        return indice_ratio < (sum[0] + sum[1] + sum[2] + sum[3]+ sum[4]+ sum[5]+ sum[6])/(div) && indice_ratio > ((sum[0]+sum[1]+ sum[2]+ sum[3]+ sum[4]+ sum[5])/(div));
-    }else if(selector == 7){
-        return indice_ratio < (sum[0] + sum[1] + sum[2] + sum[3]+ sum[4]+ sum[5]+ sum[6]+ sum[7])/(div) && indice_ratio > ((sum[0]+sum[1]+ sum[2]+ sum[3]+ sum[4]+ sum[5]+ sum[6])/(div));
-    }else if(selector == 8){
-        return indice_ratio < (sum[0] + sum[1] + sum[2] + sum[3]+ sum[4]+ sum[5]+ sum[6]+ sum[7]+ sum[8])/(div) && indice_ratio > ((sum[0]+sum[1]+ sum[2]+ sum[3]+ sum[4]+ sum[5]+ sum[6]+ sum[7])/(div));
-    }*/else{
+    }else{
         return true;
     }
 }
@@ -249,27 +219,6 @@ int select_image(int selector){
             return 3;
         }
     }
-    /*
-    if(selector == 0){
-        return 0;
-    }else if(selector == 1){
-        return 1;
-    }else if(selector == 4){
-        return 2;
-    }else if(selector == 2 || selector == 3){
-        return rand()%2;
-    }else if(selector == 5 || selector == 6){
-        return 1+rand()%2;
-    }else if(selector == 7 || selector == 8){
-        int rnd = rand()%2;
-        if(rnd == 1){
-            return 2;
-        }else{
-            return 0;
-        }
-    }else{
-        return rand()%3;
-    }*/
 }
 
 template <class VECTYPE>
@@ -277,7 +226,6 @@ void project(const std::vector<VECTYPE>& points, std::vector<std::pair<double, i
     for(size_t s = 0; s < points.size(); ++s){
         if(select(s/float(points.size()),selector)){
             VECTYPE p = points[s];
-            //double proj = (toroidal_minus(p, offset) * dir);
             double proj = (p * dir);
             std::pair<double, int> val_indice = std::pair<double, int>(proj, s);
             pointsProject.push_back(val_indice);
@@ -443,14 +391,6 @@ inline void slicedOptimalTransportBatch_image_based(std::vector<VECTYPE>& points
 #pragma omp parallel for
     for (int i = 0; i < nbPoints; ++i) {
         pointsOut[i] += finalShift[i];
-        //for(int d = 0; d<finalShift[i].dim(); ++d){
-        //    while(pointsOut[i][d]<0){
-        //        pointsOut[i][d]+=1.0;
-        //    }
-        //    while(pointsOut[i][d]>1){
-        //        pointsOut[i][d]-=1.0;
-        //    }
-        //}
     }
 
 }

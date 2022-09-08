@@ -227,6 +227,14 @@ inline void chooseDirectionsND(std::vector<VECTYPE>& directions, int m, int seed
     }
 }
 
+/**
+ * Export a .h file with an array containing the samples and function to get them.
+ *
+ * @param points Table containing the points \f$ x_j \f$
+ * @param filename name of the file to export
+ * @param tile_size size of the toroidal tile
+ * @param spp number of samples per pixels
+ */
 template <class VECTYPE>
 void export_sampler(const std::vector<VECTYPE>& points, std::string filename, int tile_size, int spp){
     int dim = points.front().dim();
@@ -242,7 +250,6 @@ void export_sampler(const std::vector<VECTYPE>& points, std::string filename, in
             
             for (size_t j = 0; j < tile_size; j++)
             {
-                
                 for (size_t k = 0; k < spp; k++)
                 {
                     for (size_t d = 0; d < dim; d++)
@@ -251,7 +258,6 @@ void export_sampler(const std::vector<VECTYPE>& points, std::string filename, in
                         else{myfile <<","<<points[(i*tile_size+j)*spp+k][d];}
                     }
                 }
-                
             }
             myfile <<"}";
         }

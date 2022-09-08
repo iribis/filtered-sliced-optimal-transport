@@ -34,7 +34,8 @@ Toy example Blue noise error distribution:
     ./FSOT -n 4096 --nbproj 2048 --tileSize 64 -d 2 --method BNED -o ../results/tile_BNED_64_64_1spp.dat
 
 For the BNED method the result is in the form of a list of points. For each pixel the n samples are put in a sequence and the pixels are also put consecutively. By example, the sample m of the pixel (i,j) is located at the line (i*tile_size+j)*n+m.
-Also create a .h file with the same name and location containing the corresponding tile and a method to ask the samples for a c++ renderer.
+
+Also create a .h file with the same name and location containing the corresponding tile and a method to ask the samples for a C++ renderer.
 
 Toy example two color example:
 ===================

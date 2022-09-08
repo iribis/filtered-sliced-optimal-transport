@@ -290,14 +290,6 @@ inline void slicedOptimalTransportBatch_stippling(std::vector<VECTYPE>& pointsOu
 #pragma omp parallel for
     for (int i = 0; i < nbPoints; ++i) {
         pointsOut[i] += finalShift[i];
-        //for(int d = 0; d<finalShift[i].dim(); ++d){
-        //    while(pointsOut[i][d]<0){
-        //        pointsOut[i][d]+=1.0;
-        //    }
-        //    while(pointsOut[i][d]>1){
-        //        pointsOut[i][d]-=1.0;
-        //    }
-        //}
     }
 
 }

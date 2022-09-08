@@ -167,7 +167,6 @@ inline void slicedStepNCube_two_class(const VECTYPE& dir, const std::vector<VECT
         max = points.size();
     }
     
-    //std::cout << max_index << std::endl;
     std::vector<std::pair<double, int>> pointsProject;
     project_two_class(points, pointsProject, dir, center, min, max, N);
 

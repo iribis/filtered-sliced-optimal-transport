@@ -168,7 +168,6 @@ inline void slicedStepNCube_progressive(const VECTYPE& dir, const std::vector<VE
     int max_index = int(((float)rand() / RAND_MAX)*nbSubdiv+1)/float(nbSubdiv)*points.size();
     //int max_index = round(std::pow(2.0,(int(((float)rand() / RAND_MAX)*nbSubdiv+1)/float(nbSubdiv)*(log2(points.size())))));
     //int max_index = round(std::pow(2.0,(((float)rand() / RAND_MAX)*(log2(points.size()))+1)));
-    //std::cout << max_index << std::endl;
     std::vector<std::pair<double, int>> pointsProject;
     project_progressive(points, pointsProject, dir, center, 0, max_index, N);
 
@@ -182,7 +181,7 @@ inline void slicedStepNCube_progressive(const VECTYPE& dir, const std::vector<VE
     {
         return x.first < y.first;
     });
-    double alpha = 0.0;//((1.0/(int(k/100)+1)));
+    double alpha = 0.0;
     double grad_normalization = (1-alpha)*float(pointsProject.size())/points.size() + alpha;
     double normalise_factor = 1.0;
     //Computes required shift to optimize 1D optimal transport
