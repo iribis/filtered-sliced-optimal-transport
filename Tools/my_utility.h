@@ -97,126 +97,17 @@ inline void chooseDirectionsND(std::vector<VECTYPE>& directions, int m, int seed
 
     for (int k = 0; k < m; ++k){
         if(dim == 2){
-            
             double rnd =  unif(generatorND);
-            if(rnd < 1.3){
-                double theta =  (float(k)/m + unif(generatorND)/float(m))*2*PI; // stratified 2D directions
-                directions[k][0] = cos(theta);
-                directions[k][1] = sin(theta);
-            }else if(rnd < 0.65){
-                directions[k][0] = 1.0;
-                directions[k][1] = 0.0;
-            }else{
-                directions[k][0] = 0.0;
-                directions[k][1] = 1.0;
-            }
-        }else if(dim == 3){
-            double rnd =  unif(generatorND);
-            if(rnd < 0.7){
-                for (int j = 0; j < dim; ++j){
-                    directions[k][j] = normalND(generatorND);
-                }
-            }else if(rnd < 1.7){
-                double theta =  (float(k)/m + unif(generatorND)/float(m))*2*PI; // stratified 2D directions
-                directions[k][0] = cos(theta);
-                directions[k][1] = sin(theta);
-                directions[k][2] = 0.0;
-            }else if(rnd < 0.8){
-                directions[k][0] = 1.0;
-                directions[k][1] = 0.0;
-                directions[k][2] = 0.0;
-            }else if(rnd < 0.9){
-                directions[k][0] = 0.0;
-                directions[k][1] = 1.0;
-                directions[k][2] = 0.0;
-            }else{
-                directions[k][0] = 0.0;
-                directions[k][1] = 0.0;
-                directions[k][2] = 1.0;
-            }
-        }else if(dim == 4){
-            double rnd =  unif(generatorND)*1+1.0;
-            directions[k][0] = 0.0;
-            directions[k][1] = 0.0;
-            directions[k][2] = 0.0;
-            directions[k][3] = 0.0;
-            if(rnd < 0.7){
+            if(rnd < 1.7){ // change for 0.7 to unable axis aligned projections
                 double theta =  (float(k)/m + unif(generatorND)/float(m))*2*PI; // stratified 2D directions
                 directions[k][0] = cos(theta);
                 directions[k][1] = sin(theta);
             }else if(rnd < 0.85){
                 directions[k][0] = 1.0;
                 directions[k][1] = 0.0;
-            }else if(rnd < 1.0){
+            }else{
                 directions[k][0] = 0.0;
                 directions[k][1] = 1.0;
-            }
-            if(rnd < 1.7){
-                double theta =  (float(k)/m + unif(generatorND)/float(m))*2*PI; // stratified 2D directions
-                directions[k][2] = cos(theta);
-                directions[k][3] = sin(theta);
-            }else if(rnd < 1.85){
-                directions[k][2] = 1.0;
-                directions[k][3] = 0.0;
-            }else {
-                directions[k][2] = 0.0;
-                directions[k][3] = 1.0;
-            }
-            //std::cout <<  directions[k] << std::endl;
-        }else if(dim == 8){
-            
-            double rnd =  unif(generatorND)*4;
-            directions[k][0] = 0.0;
-            directions[k][1] = 0.0;
-            directions[k][2] = 0.0;
-            directions[k][3] = 0.0;
-            directions[k][4] = 0.0;
-            directions[k][5] = 0.0;
-            directions[k][6] = 0.0;
-            directions[k][7] = 0.0;
-            if(rnd < 0.7){
-                double theta =  (float(k)/m + unif(generatorND)/float(m))*2*PI; // stratified 2D directions
-                directions[k][0] = cos(theta);
-                directions[k][1] = sin(theta);
-            }else if(rnd < 0.85){
-                directions[k][0] = 1.0;
-                directions[k][1] = 0.0;
-            }else if(rnd < 1.0){
-                directions[k][0] = 0.0;
-                directions[k][1] = 1.0;
-            }
-            if(rnd < 1.7){
-                double theta =  (float(k)/m + unif(generatorND)/float(m))*2*PI; // stratified 2D directions
-                directions[k][2] = cos(theta);
-                directions[k][3] = sin(theta);
-            }else if(rnd < 1.85){
-                directions[k][2] = 1.0;
-                directions[k][3] = 0.0;
-            }else if(rnd < 2.0){
-                directions[k][2] = 0.0;
-                directions[k][3] = 1.0;
-            }
-            if(rnd < 2.7){
-                double theta =  (float(k)/m + unif(generatorND)/float(m))*2*PI; // stratified 2D directions
-                directions[k][4] = cos(theta);
-                directions[k][5] = sin(theta);
-            }else if(rnd < 2.85){
-                directions[k][4] = 1.0;
-                directions[k][5] = 0.0;
-            }else if(rnd < 3.0){
-                directions[k][4] = 0.0;
-                directions[k][5] = 1.0;
-            }
-            if(rnd < 3.7){
-                double theta =  (float(k)/m + unif(generatorND)/float(m))*2*PI; // stratified 2D directions
-                directions[k][6] = cos(theta);
-                directions[k][7] = sin(theta);
-            }else if(rnd < 3.85){
-                directions[k][6] = 1.0;
-                directions[k][7] = 0.0;
-            }else {
-                directions[k][6] = 0.0;
-                directions[k][7] = 1.0;
             }
         }else{
             for (int j = 0; j < dim; ++j){
