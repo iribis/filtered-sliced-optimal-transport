@@ -28,6 +28,9 @@ This sample-set can then be used in a renderer to produce blue noise error distr
 This code is based on that of https://github.com/loispaulin/Sliced-Optimal-Transport-Sampling. We thank them for their work and recommend reading their article "Sliced Optimal Transport Sampling".
 
 ## Examples
+
+Several code examples are available to easily test the different applications (Blue noise error distribution, simple multi-class, progressive sampler and stippling). For each application we give an example of use with the command line to run the code and if necessary the python script to generate an understandable image of the result.
+
 Toy example Blue noise error distribution:
 ===================
 
