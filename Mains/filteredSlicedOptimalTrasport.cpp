@@ -171,7 +171,7 @@ int main_template(int argc, const char **argv) {
             }else if(method == "progressive"){
                 slicedOptimalTransportNCube_progressive(points, result, nbIter, m, seed, tileSize, silent, nbSubdiv);
             }else if(method == "image"){
-                slicedOptimalTransportNImageBased(points, result, nbIter, m, seed, silent);
+                slicedOptimalTransportNImageBased(points, result, nbIter, m, seed, (inPrefix).c_str(), silent);
             }else if(method == "twoclass"){
                 slicedOptimalTransportNCube_two_class(points, result, nbIter, m, seed, tileSize, silent, nbSubdiv);
             }else if(method == "stippling"){

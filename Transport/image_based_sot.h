@@ -17,57 +17,98 @@
 #include <fstream> // ifstream
 #include <sstream> // stringstream
 
+#include "../Tools/lodepng.h"
+
 const int multiplier_pointset_images = 3;
 
-const int w = 450;// colored_sea
-const int h = 227;
+int w = 10000;
+int h = 10000;
 
+std::vector<std::vector<std::vector<float>>> image;
+std::vector<std::vector<std::vector<float>>> image_CDF;
+std::vector<std::vector<float>> cumulativeimage;
+std::vector<float> sum;
 
-float image[w][h][6];
-float cumulativeImage[w][6];
-float sum[6];
+void decode(const char* filename) {
+  int row = 0, col = 0, numrows = 0, numcols = 0, max_val = 256;
+  std::vector<unsigned char> img; //the raw pixels
+  unsigned width, height;
 
-void readImage(){
-    int row = 0, col = 0, numrows = 0, numcols = 0;
-    for(int c=0; c<4;++c){
-        std::ifstream infile((std::string("../resources/land_")+std::to_string(c).c_str()+std::string(".pgm")).c_str());
-        std::stringstream ss;
-        std::string inputLine = "";
+  //decode
+  unsigned error = lodepng::decode(img, width, height, filename);
 
-        // First line : version
-        getline(infile,inputLine);
-        if(inputLine.compare("P2") != 0) std::cerr << "Version error" << std::endl;
-        else std::cout << "Version : " << inputLine << std::endl;
-
-        // Continue with a stringstream
-        ss << infile.rdbuf();
-        // Third line : size
-        ss >> numcols >> numrows;
-        std::cout << numcols << " columns and " << numrows << " rows" << std::endl;
-
-        // Following lines : data
-        for(row = 0; row < numrows; ++row)
-            for (col = 0; col < numcols; ++col) ss >> image[row][col][c];
-
-        // Now print the array to see the result
-        infile.close();
-
-        for(row = 0; row < numrows; ++row){
-            for (col = 0; col < numcols; ++col){
-                //image[row][col][c] = 1.0 - image[row][col][c]/255.0;
-            }
-        }
-        sum[c] = 0;
-        for(row = 0; row < numrows; ++row){
-            float cumulative = 0;
-            for (col = 0; col < numcols; ++col){
-                cumulative += image[row][col][c];
-            }
-            cumulativeImage[row][c] = cumulative;
-            sum[c] += cumulative;
-        }
+  //if there's an error, display it
+  if(error){
+    std::cout << "decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+  }else{
+    std::cout << "Image loaded : w(" << width <<"), h("<< height << "), img[0]=" << int(img[0]) << ", img.size("<<img.size()<<")" <<std::endl;
+  }
+  w = width;
+  h = height;
+  numrows = width;
+  numcols = height;
+  sum = std::vector<float>(4);
+  cumulativeimage = std::vector<std::vector<float>>(width);
+  image_CDF = std::vector<std::vector<std::vector<float>>>(width);
+  image = std::vector<std::vector<std::vector<float>>>(width);
+  for (size_t j = 0; j < width; j++)
+  {
+    cumulativeimage[j] = std::vector<float>(4);
+  }
+  for (size_t i = 0; i < width; i++){
+        image_CDF[i] = std::vector<std::vector<float>>(height);
+        image[i] = std::vector<std::vector<float>>(height);
+    for (size_t j = 0; j < height; j++){
+        image_CDF[i][j] = std::vector<float>(4);
+        image[i][j] = std::vector<float>(4);
     }
+  }
+  for(row = 0; row < width; ++row){
+    for (col = 0; col < height; ++col){
+        float Red = float(img[4*(col*width+row)]+1)/float(max_val);
+        float Green = float(img[4*(col*width+row)+1]+1)/float(max_val);
+        float Blue = float(img[4*(col*width+row)+2]+1)/float(max_val);
 
+        float Black   = 1.0 - std::max(Red,std::max(Green,Blue));
+        float Cyan    = (1.0-Red-Black)/float(1.0-Black);
+        float Magenta = (1.0-Green-Black)/float(1.0-Black);
+        float Yellow  = (1.0-Blue-Black)/float(1.0-Black);
+        
+        image[row][col][0] = int(Cyan*255);
+        image[row][col][1] = int(Magenta*255);
+        image[row][col][2] = int(Yellow*255);
+        image[row][col][3] = int(Black*255);
+    }
+  }
+  for (int c = 0; c < 4; ++c){
+    float cumulat = 0;
+    for(row = 0; row < numrows; ++row){
+        cumulat = 0;
+        for (col = 0; col < numcols; ++col){
+            //image[row][col][c] = 255 - int((image[row][col][c]/float(max_val))*255);
+            image_CDF[row][col][c] = cumulat + image[row][col][c];
+            cumulat += image[row][col][c];
+        }
+
+    }
+    sum[c] = 0;
+    cumulat = 0;
+    for(row = 0; row < numrows; ++row){
+        float cumulative = 0;
+        for (col = 0; col < numcols; ++col){
+            cumulative += image[row][col][c];
+        }
+        cumulativeimage[row][c] = cumulat + cumulative;
+        cumulat += cumulative;
+        sum[c] = cumulativeimage[row][c];
+    }
+  }
+  std::cout << "end loading" << std::endl;
+  //the pixels are now in the vector "image", 4 bytes per pixel, ordered RGBARGBA..., use it as texture, draw it, ...
+}
+
+void readImage(const char* filename){
+    decode(filename);
     double div = sum[0]+sum[1]+sum[2]+sum[3];
     double tmp = 0;
     for (size_t i = 0; i < 4; i++)
@@ -75,10 +116,7 @@ void readImage(){
         tmp += sum[i];
         std::cout << tmp/div << std::endl;
     }
-    
 }
-
-
 
 bool select(double indice_ratio, int selector){
     double div = sum[0]+sum[1]+sum[2]+sum[3];
@@ -233,7 +271,6 @@ void project(const std::vector<VECTYPE>& points, std::vector<std::pair<double, i
     }
 
 }
-
 template <class VECTYPE>
 inline void getInverseImage(int D, int nbSamples, std::vector<double>& pos,VECTYPE dir,VECTYPE offset, int selector){
 
@@ -244,33 +281,57 @@ inline void getInverseImage(int D, int nbSamples, std::vector<double>& pos,VECTY
         int img = select_image(selector);
         VECTYPE p;
         float rnd1 = ((float)rand() / RAND_MAX)*sum[img];
-        float cum = 0;
+
         float x = 0;
         float y = 0;
-        for (int j = 0; j < w; j++)
-        {
-            if(cum+cumulativeImage[j][img]>=rnd1){
-                x = j;
-                break;
+
+        int low = 0;
+        int up = w-1;
+        int mid = (low+up)/2;
+        while(up-low > 1){
+            mid = (low+up)/2;
+            if(cumulativeimage[mid][img]<=rnd1){
+                low = mid;
+            }else{
+                up = mid;
             }
-            cum+=cumulativeImage[j][img];
         }
-        
-        float rnd2 = ((float)rand() / RAND_MAX)*cumulativeImage[int(x)][img];
-        cum = 0;
-        for (int j = 0; j < h; j++)
-        {
-            if(cum+image[int(x)][j][img]>=rnd2){
-                y = j;
-                break;
-            }
-            cum+=image[int(x)][j][img];
+        if(up-low == 0){
+            x = low;
+        }else if(cumulativeimage[low][img]<=rnd1){
+            x = low;
+        }else{
+            x = up;
         }
 
-        p[1] = (1-(x+((float)rand() / RAND_MAX))/w)*w/std::max(w,h);
-        p[0] = ((y+((float)rand() / RAND_MAX))/h)*h/std::max(w,h);
+        
+        float rnd2 = ((float)rand() / RAND_MAX)*image_CDF[int(x)][h-1][img];
+
+        low = 0;
+        up = h-1;
+        mid = (low+up)/2;
+        while(up-low > 1){
+            mid = (low+up)/2;
+            if(image_CDF[int(x)][mid][img]<=rnd2){
+                low = mid;
+            }else{
+                up = mid;
+            }
+        }
+        if(up-low == 0){
+            y = low;
+        }else if(image[int(x)][low][img]<=rnd2){
+            y = low;
+        }else{
+            y = up;
+        }
+
+        p[0] = ((x+((float)rand() / RAND_MAX))/w)*w/std::max(w,h);
+        p[1] = (1-(y+((float)rand() / RAND_MAX))/h)*h/std::max(w,h);
         posbis[i] = p*dir;
     }
+
+
     std::sort(posbis.begin(),posbis.end());
     for (int i = 0; i < nbSamples; i++)
     {
@@ -278,7 +339,6 @@ inline void getInverseImage(int D, int nbSamples, std::vector<double>& pos,VECTY
     }
     
 }
-
 
 
 /**
@@ -425,12 +485,12 @@ inline void slicedOptimalTransportNImageBased(const std::vector<VECTYPE>& points
                                         std::vector<VECTYPE>& pointsOut,
                                         int nbIter,
                                         int m,
-                                        int seed, bool silent = false)
+                                        int seed, const char* inPrefix,bool silent = false)
 {
 
     int N = pointsIn.front().dim();
     pointsOut = pointsIn;
-    readImage();
+    readImage(inPrefix);
     //Accumulation shift to be applied later on
     std::vector<std::vector<double>> shift(m, std::vector<double>(pointsOut.size()));
     std::vector<VECTYPE> finalShift(pointsOut.size(), VECTYPE(N));

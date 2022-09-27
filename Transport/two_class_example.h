@@ -14,7 +14,7 @@
 #include "../Tools/iopointset.h"
 #include "../Tools/my_utility.h"
 
-double multiplier_two_class = 3;
+double multiplier_two_class = 5;
 
 template <class VECTYPE>
 VECTYPE toroidal_minus_two_class(VECTYPE& v1, VECTYPE& v2) {
@@ -147,7 +147,7 @@ inline void slicedStepNCube_two_class(const VECTYPE& dir, const std::vector<VECT
     int N = points.front().dim();
     VECTYPE center;
     for (int i = 0; i < N; ++i){
-        center[i] = 1.0*((float)rand() / RAND_MAX);
+        center[i] = 0.0*((float)rand() / RAND_MAX);//1.0* --> toroidal, 0.0* --> non toroidal
     }
     for (size_t i = 0; i < points.size(); ++i){
         shift[i] = 0.0f;

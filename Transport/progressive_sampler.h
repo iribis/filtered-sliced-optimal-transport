@@ -14,7 +14,7 @@
 #include "../Tools/iopointset.h"
 #include "../Tools/my_utility.h"
 
-double multiplier = 3;
+double multiplier = 5;
 int nbSubdiv = 1;
 
 template <class VECTYPE>
@@ -181,8 +181,7 @@ inline void slicedStepNCube_progressive(const VECTYPE& dir, const std::vector<VE
     {
         return x.first < y.first;
     });
-    double alpha = 0.0;
-    double grad_normalization = (1-alpha)*float(pointsProject.size())/points.size() + alpha;
+    double grad_normalization = float(pointsProject.size())/points.size();
     double normalise_factor = 1.0;
     //Computes required shift to optimize 1D optimal transport
     for (size_t i = 1; i < pointsProject.size()-1; ++i) {
