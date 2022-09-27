@@ -58,8 +58,8 @@ To have a more visual result the subdivisions are not made on dyadic numbers. Th
 Toy example Image stippling:
 ===================
 
-    ./FSOT -n 4096 -p 1000 --nbproj 512 --method image -o ../results/image.dat
-    python3 ../render_color_img.py ../results/image.dat ../results/image.png 0.138348 0.477158 0.727171 1.0
+    ./FSOT -n 4096 -p 1000 --nbproj 512 --method image -i ../resources/colored_sea.png -o ../results/image.dat
+    python3 ../render_color_img.py ../results/image.dat ../results/image.png 0.133337 0.470049 0.719257 1.0
 
 The python file generating the result takes as parameters the relative energies of the different channels of the cmyk image. They have been hard coded here to simplify.
 
@@ -69,4 +69,9 @@ Toy example monochrome stippling:
     ./FSOT -n 8192 -p 500 --nbproj 256 --method stippling -i ../resources/elephants.png -o ../results/stippling.dat
     python3 ../render_stippling.py ../results/stippling.dat ../results/stippling.png
 
+## Parameters
 
+See help for the parameters:
+===================
+
+    ./FSOT -h
