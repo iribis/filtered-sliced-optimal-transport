@@ -40,6 +40,8 @@ For the BNED method the result is in the form of a list of points. For each pixe
 
 Also create a .h file with the same name and location containing the corresponding tile and a method to ask the samples for a C++ renderer.
 
+For this problem, we recmmand using a number of projections (--nbproj) proportional to the of pixels in the tile (tileSize*tileSize). We also recommand using between 4 000 and 20 000 iterations (-p).
+
 Toy example two color example:
 ===================
 
@@ -54,6 +56,7 @@ Toy example Progressive sample:
     python3 ../render_progressive_pointset.py ../results/progressive.dat ../results/progressive.png 4
 
 To have a more visual result the subdivisions are not made on dyadic numbers. The results will be slightly different from those presented in the article.
+The parameter (--nbSubdiv) control the number of subdivisions for wich the pointset is optimized.
 
 Toy example Image stippling:
 ===================
@@ -61,7 +64,8 @@ Toy example Image stippling:
     ./FSOT -n 4096 -p 1000 --nbproj 512 --method image -i ../resources/colored_sea.png -o ../results/image.dat
     python3 ../render_color_img.py ../results/image.dat ../results/image.png 0.133337 0.470049 0.719257 1.0
 
-The python file generating the result takes as parameters the relative energies of the different channels of the cmyk image. They have been hard coded here to simplify.
+The python file generating the result takes as parameters the relative energies of the different channels of the cmyk image (4 numbers after the export file). They have been hard coded here to simplify but you can find them writen when luching the optimization. 
+As guidance, we recommend using beetween 1 000 and 10 000 iterations (-p) and around 500 projections per iterations (--nbproj).
 
 Toy example monochrome stippling:
 ===================
@@ -69,9 +73,12 @@ Toy example monochrome stippling:
     ./FSOT -n 8192 -p 500 --nbproj 256 --method stippling -i ../resources/elephants.png -o ../results/stippling.dat
     python3 ../render_stippling.py ../results/stippling.dat ../results/stippling.png
 
+
 ## Parameters
 
 See help for the parameters:
 ===================
 
     ./FSOT -h
+
+The main parameters are (-n) the number of points, (-p) the number of iterations, (--nbproj) the number of projections and (-o) for the output file. The reste of the parameters are not used in every methods.
