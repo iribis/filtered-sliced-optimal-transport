@@ -24,13 +24,18 @@ for t in f:
 
 print(u)
 
-fig = plt.figure(figsize=(int(np.sqrt(u)/2), int(np.sqrt(u)*2/2)), dpi=80)
+input_img = cv.imread(str(sys.argv[3]))
+aspect_ratio = input_img.shape[0]/float(input_img.shape[1])
+
+fig = plt.figure(figsize=(int(np.sqrt(u)/1.6), int(np.sqrt(u)*aspect_ratio/1.6)), dpi=80)
+if(aspect_ratio < 1):
+    fig = plt.figure(figsize=(int(np.sqrt(u)*(1.0/aspect_ratio)/1.6), int(np.sqrt(u)/1.6)), dpi=80)
 ax = fig.add_subplot(1, 1, 1)
 
-plt.scatter(x[0:int(u*float(sys.argv[3]))], y[0:int(u*float(sys.argv[3]))], s=area, c=(0,1,1), alpha=1.0)
-plt.scatter(x[int(u*float(sys.argv[3])):int(u*float(sys.argv[4]))], y[int(u*float(sys.argv[3])):int(u*float(sys.argv[4]))], s=area, c=(1.0,0.0,1.0), alpha=1.0)
-plt.scatter(x[int(u*float(sys.argv[4])):int(u*float(sys.argv[5]))], y[int(u*float(sys.argv[4])):int(u*float(sys.argv[5]))], s=area, c=(1.0,1.0,0.0), alpha=1.0)
-plt.scatter(x[int(u*float(sys.argv[5])):int(u*float(sys.argv[6]))], y[int(u*float(sys.argv[5])):int(u*float(sys.argv[6]))], s=area, c=(0.0,0.0,0.0), alpha=1.0)
+plt.scatter(x[0:int(u*float(sys.argv[4]))], y[0:int(u*float(sys.argv[4]))], s=area, c=(0,1,1), alpha=1.0)
+plt.scatter(x[int(u*float(sys.argv[4])):int(u*float(sys.argv[5]))], y[int(u*float(sys.argv[4])):int(u*float(sys.argv[5]))], s=area, c=(1.0,0.0,1.0), alpha=1.0)
+plt.scatter(x[int(u*float(sys.argv[5])):int(u*float(sys.argv[6]))], y[int(u*float(sys.argv[5])):int(u*float(sys.argv[6]))], s=area, c=(1.0,1.0,0.0), alpha=1.0)
+plt.scatter(x[int(u*float(sys.argv[6])):int(u*float(sys.argv[7]))], y[int(u*float(sys.argv[6])):int(u*float(sys.argv[7]))], s=area, c=(0.0,0.0,0.0), alpha=1.0)
 
 #ax.set_xlim([0.0, 0.7])
 #ax.set_ylim([0.0, 1.0])

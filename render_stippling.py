@@ -10,7 +10,7 @@ x = np.zeros([32*32*4*4*4*4])
 y = np.zeros([32*32*4*4*4*4])
 f = open(str(sys.argv[1]), "r")
 
-area = int(np.pi*3*4*3*3*2)/10
+area = int(np.pi*3*4*2*3*2*2)
 
 count = 0
 for t in f:
@@ -19,7 +19,12 @@ for t in f:
     y[int(count)] = float(line[1])
     count += 1
 
-fig = plt.figure(figsize=(int(np.sqrt(count)/4), int(np.sqrt(count))/1.5/4), dpi=80)
+input_img = cv.imread(str(sys.argv[3]))
+aspect_ratio = input_img.shape[0]/float(input_img.shape[1])
+
+fig = plt.figure(figsize=(int(np.sqrt(count)/1.6), int(np.sqrt(count)*aspect_ratio/1.6)), dpi=80)
+if(aspect_ratio < 1):
+    fig = plt.figure(figsize=(int(np.sqrt(count)*(1.0/aspect_ratio)/1.6), int(np.sqrt(count)/1.6)), dpi=80)
 ax = fig.add_subplot(1, 1, 1)
 
 plt.scatter(x[:count], y[:count],s=area, c=(0,0,0))

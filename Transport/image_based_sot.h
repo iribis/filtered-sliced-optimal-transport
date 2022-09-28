@@ -41,7 +41,7 @@ void decode(const char* filename) {
   if(error){
     std::cout << "decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
   }else{
-    std::cout << "Image loaded : w(" << width <<"), h("<< height << "), img[0]=" << int(img[0]) << ", img.size("<<img.size()<<")" <<std::endl;
+    std::cout << "Image loaded : w(" << width <<"), h("<< height << ")"<<std::endl;
   }
   w = width;
   h = height;
@@ -111,6 +111,7 @@ void readImage(const char* filename){
     decode(filename);
     double div = sum[0]+sum[1]+sum[2]+sum[3];
     double tmp = 0;
+    std::cout << "Cumulative relative color ratio (used for the python script) " << std::endl;
     for (size_t i = 0; i < 4; i++)
     {
         tmp += sum[i];

@@ -42,7 +42,7 @@ void decodeOneStep(const char* filename) {
   if(error){
     std::cout << "decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
   }else{
-    std::cout << "Image loaded : w(" << width <<"), h("<< height << "), img[0]=" << int(image[0]) << ", img.size("<<image.size()<<")" <<std::endl;
+    std::cout << "Image loaded : w(" << width <<"), h("<< height << ")" <<std::endl;
   }
   w_stippling = width;
   h_stippling = height;

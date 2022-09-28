@@ -62,7 +62,7 @@ Toy example Image stippling:
 ===================
 
     ./FSOT -n 4096 -p 1000 --nbproj 512 --method image -i ../resources/colored_sea.png -o ../results/image.dat
-    python3 ../render_color_img.py ../results/image.dat ../results/image.png 0.133337 0.470049 0.719257 1.0
+    python3 ../render_color_img.py ../results/image.dat ../results/image.png ../resources/colored_sea.png 0.133337 0.470049 0.719257 1.0
 
 The python file generating the result takes as parameters the relative energies of the different channels of the cmyk image (4 numbers after the export file). They have been hard coded here to simplify but you can find them writen when luching the optimization. 
 As guidance, we recommend using beetween 1 000 and 10 000 iterations (-p) and around 500 projections per iterations (--nbproj).
@@ -71,7 +71,7 @@ Toy example monochrome stippling:
 ===================
 
     ./FSOT -n 8192 -p 500 --nbproj 256 --method stippling -i ../resources/elephants.png -o ../results/stippling.dat
-    python3 ../render_stippling.py ../results/stippling.dat ../results/stippling.png
+    python3 ../render_stippling.py ../results/stippling.dat ../results/stippling.png ../resources/elephants.png
 
 
 ## Parameters
