@@ -98,7 +98,7 @@ inline void chooseDirectionsND(std::vector<VECTYPE>& directions, int m, int seed
     for (int k = 0; k < m; ++k){
         if(dim == 2){
             double rnd =  unif(generatorND);
-            if(rnd < 0.7){ // change for 0.7 to unable axis aligned projections
+            if(rnd < 1.7){ // change for 0.7 to unable axis aligned projections
                 double theta =  (float(k)/m + unif(generatorND)/float(m))*2*PI; // stratified 2D directions
                 directions[k][0] = cos(theta);
                 directions[k][1] = sin(theta);
