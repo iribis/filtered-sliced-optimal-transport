@@ -45,7 +45,7 @@ For this problem, we recmmand using a number of projections (--nbproj) proportio
 Toy example two color example:
 ===================
 
-    ./FSOT -n 1024 --nbproj 256 -d 2 --method twoclass -o twoclass.dat
+    ./FSOT -n 1024 --nbproj 256 -d 2 --method twoclass -o ../results/twoclass.dat
     python3 ../render_two_class_pointset.py ../results/twoclass.dat ../results/twoclass.png
 
 

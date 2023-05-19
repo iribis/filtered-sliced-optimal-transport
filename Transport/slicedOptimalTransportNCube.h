@@ -23,22 +23,8 @@ double r = 2;
 double alpha = 2;
 
 
-double w_recons(float di, float dj) {
-    return std::max(0.0,std::exp(-alpha * di * di) - std::exp(-alpha * r * r)) * std::max(0.0,std::exp(-alpha * dj * dj) - std::exp(-alpha * r * r));
-}
-
-template <class VECTYPE>
-double weight(VECTYPE& c, VECTYPE& p){
-	
-    double res = 0;
-    for(int di = -reconstruction_kernel_size+1; di < reconstruction_kernel_size; ++di){
-        for(int dj = -reconstruction_kernel_size+1; dj < reconstruction_kernel_size; ++dj){
-            double a = std::min(std::min(std::abs(c[0] + di - p[0]),std::abs(c[0] + di - p[0] + tileSize)),std::abs(c[0] + di - p[0] - tileSize));
-            double b = std::min(std::min(std::abs(c[1] + dj - p[1]),std::abs(c[1] + dj - p[1] + tileSize)),std::abs(c[1] + dj - p[1] - tileSize));
-            res += exp(-(di*di+dj*dj)/pow(sigma, 2.0)) * w_recons(a,b);
-        }
-    }
-    return res;
+double weight(int di,int dj){
+    return std::exp(-(di*di+dj*dj)/std::pow(sigma,2.0));
 }
 
 template <class VECTYPE>
@@ -62,18 +48,16 @@ void project(const std::vector<VECTYPE>& points,
             int x = ((u+di + tileSize)%tileSize);
             int y = ((v+dj + tileSize)%tileSize);
             int pixel_indice =  (x*tileSize + y)*spp;
-            VECTYPE c;
-            c[0] = u + 0.5;
-            c[1] = v + 0.5;
+
             for(int s = 0; s < spp; ++s){
                 VECTYPE p = points[pixel_indice+s];
-                //if (weight(c,p) >= w_ref) {
+                if (weight(di,dj) >= w_ref) {
                     double proj = toroidal_minus(p,center) * dir;
 
                     int indices = pixel_indice+s;
                     std::pair<double, int> val_indice = std::pair<double, int>(proj, indices);
                     pointsProject.push_back(val_indice);
-                //}
+                }
             }
         }
     }
@@ -120,6 +104,7 @@ inline void chooseFunctionSlices(std::vector<int>& function_slices, int m){
     for (int k = 0; k < m; ++k){
         int a = (double(k)/(m/21.0)) * (tileSize*tileSize) + offset;
         function_slices[k] = a%(tileSize*tileSize);
+        function_slices[k] = rand()%(tileSize*tileSize);
     }
 }
 
@@ -132,9 +117,7 @@ inline void chooseFunctionSlices(std::vector<int>& function_slices, int m){
 template <class VECTYPE>
 inline void chooseWeightSlices(std::vector<double>& weight_slices, int m,VECTYPE c){
     for (int k = 0; k < m; ++k){
-        c[0] = 10 + 0.5;
-        c[1] = 10 + 0.5;
-        double a = weight(c, c) * ((float)rand() / RAND_MAX);
+        double a = ((float)rand() / RAND_MAX);
         weight_slices[k] = a;
     }
 }
@@ -238,7 +221,7 @@ inline void slicedOptimalTransportBatchCube(std::vector<VECTYPE>& pointsOut,
         for (int k = 0; k < m; ++k) {
             sh += shift[k][i] * directions[k];
         }
-        finalShift[i] = 1*(sh/m) + localShift[i]*0.0;
+        finalShift[i] = 512*(sh/m) + localShift[i]*0.0;
         localShift[i] = (sh/m) + localShift[i]*0.0;
     }
 

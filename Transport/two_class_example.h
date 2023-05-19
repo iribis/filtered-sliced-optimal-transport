@@ -14,7 +14,7 @@
 #include "../Tools/iopointset.h"
 #include "../Tools/my_utility.h"
 
-double multiplier_two_class = 5;
+double multiplier_two_class = 3;
 
 template <class VECTYPE>
 VECTYPE toroidal_minus_two_class(VECTYPE& v1, VECTYPE& v2) {
