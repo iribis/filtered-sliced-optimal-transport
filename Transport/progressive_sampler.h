@@ -166,8 +166,9 @@ inline void slicedStepNCube_progressive(const VECTYPE& dir, const std::vector<VE
     }
 
     //int max_index = int(((float)rand() / RAND_MAX)*nbSubdiv+1)/float(nbSubdiv)*points.size();
-    //int max_index = round(std::pow(2.0,(int(((float)rand() / RAND_MAX)*nbSubdiv+1)/float(nbSubdiv)*(log2(points.size())))));
-    int max_index = round(std::pow(2.0,(((float)rand() / RAND_MAX)*(log2(points.size()))+1)));
+    int max_index = round(std::pow(2.0,(int(((float)rand() / RAND_MAX)*nbSubdiv+1)/float(nbSubdiv)*(log2(points.size())))));
+    //int max_index = round(std::pow(2.0,(((float)rand() / RAND_MAX)*(log2(points.size()))+1)));
+    //std::cout << max_index << std::endl;
     std::vector<std::pair<double, int>> pointsProject;
     project_progressive(points, pointsProject, dir, center, 0, max_index, N);
 
@@ -253,6 +254,7 @@ inline void slicedOptimalTransportBatchCube_progressive(std::vector<VECTYPE>& po
             double v_hat = v_adam[i][k]/(1-std::pow(B2,t));
             finalShift[i][k] = lr*m_hat/(std::sqrt(v_hat)+epsilon);
         }
+        
     }
 
     //Displace points according to accumultiplierated shift
@@ -326,6 +328,7 @@ inline void slicedOptimalTransportNCube_progressive(const std::vector<VECTYPE>& 
             print_progress_progressive(double(i)/nbIter);
         }
         chooseDirectionsND_progressive(directions, m, seed);
+
 
         slicedOptimalTransportBatchCube_progressive(pointsOut, directions, shift, finalShift,m_adam,v_adam,i+1);
     }
