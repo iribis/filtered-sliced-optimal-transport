@@ -14,7 +14,7 @@
 #include "../Tools/iopointset.h"
 #include "../Tools/my_utility.h"
 
-double multiplier = 5;
+double multiplier = 3;
 int nbSubdiv = 1;
 
 template <class VECTYPE>
@@ -91,6 +91,7 @@ inline void getInverseRadonNCube_progressive(int D, int nbSamples, std::vector<d
     for (int i = 0; i < nbSamples; i++)
     {
         pos[i] = point_projected[i*multiplier + int(multiplier/2)];
+        
     }
 }
 
@@ -165,8 +166,8 @@ inline void slicedStepNCube_progressive(const VECTYPE& dir, const std::vector<VE
         shift[i] = 0.0f;
     }
 
-    //int max_index = int(((float)rand() / RAND_MAX)*nbSubdiv+1)/float(nbSubdiv)*points.size();
-    int max_index = round(std::pow(2.0,(int(((float)rand() / RAND_MAX)*nbSubdiv+1)/float(nbSubdiv)*(log2(points.size())))));
+    int max_index = int(((float)rand() / RAND_MAX)*nbSubdiv+1)/float(nbSubdiv)*points.size();
+    //int max_index = round(std::pow(2.0,(int(((float)rand() / RAND_MAX)*nbSubdiv+1)/float(nbSubdiv)*(log2(points.size())))));
     //int max_index = round(std::pow(2.0,(((float)rand() / RAND_MAX)*(log2(points.size()))+1)));
     //std::cout << max_index << std::endl;
     std::vector<std::pair<double, int>> pointsProject;
@@ -244,7 +245,7 @@ inline void slicedOptimalTransportBatchCube_progressive(std::vector<VECTYPE>& po
         }
         for (int k = 0; k < finalShift[i].dim(); ++k) {
             double grad = (sh[k]/m)*-1;
-            double lr = 5.5;//8.6, 0.005
+            double lr =0.005;//8.6, 0.005
             double B1 = 0.9;
             double B2 = 0.99;
             double epsilon = 0.0001;
@@ -260,7 +261,7 @@ inline void slicedOptimalTransportBatchCube_progressive(std::vector<VECTYPE>& po
     //Displace points according to accumultiplierated shift
 #pragma omp parallel for
     for (int i = 0; i < nbPoints; ++i) {
-        pointsOut[i] += finalShift[i];
+        pointsOut[i] -= finalShift[i];
         for(int d = 0; d<finalShift[i].dim(); ++d){
             while(pointsOut[i][d]<0){
                 pointsOut[i][d]+=1.0;
