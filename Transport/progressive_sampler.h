@@ -166,7 +166,8 @@ inline void slicedStepNCube_progressive(const VECTYPE& dir, const std::vector<VE
         shift[i] = 0.0f;
     }
 
-    int max_index = int(((float)rand() / RAND_MAX)*nbSubdiv+1)/float(nbSubdiv)*points.size();
+    int max_index = points.size();
+    //int max_index = int(((float)rand() / RAND_MAX)*nbSubdiv+1)/float(nbSubdiv)*points.size();
     //int max_index = round(std::pow(2.0,(int(((float)rand() / RAND_MAX)*nbSubdiv+1)/float(nbSubdiv)*(log2(points.size())))));
     //int max_index = round(std::pow(2.0,(((float)rand() / RAND_MAX)*(log2(points.size()))+1)));
     //std::cout << max_index << std::endl;
@@ -245,7 +246,7 @@ inline void slicedOptimalTransportBatchCube_progressive(std::vector<VECTYPE>& po
         }
         for (int k = 0; k < finalShift[i].dim(); ++k) {
             double grad = (sh[k]/m)*-1;
-            double lr =0.005;//8.6, 0.005
+            double lr =0.0003;//8.6, 0.005
             double B1 = 0.9;
             double B2 = 0.99;
             double epsilon = 0.0001;

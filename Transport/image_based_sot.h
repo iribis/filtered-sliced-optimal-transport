@@ -419,7 +419,10 @@ template <class VECTYPE>
 inline void slicedOptimalTransportBatch_image_based(std::vector<VECTYPE>& pointsOut,
                                  const std::vector<VECTYPE>& directions,
                                  std::vector<std::vector<double>>& shift,
-                                 std::vector<VECTYPE>& finalShift)
+                                 std::vector<VECTYPE>& finalShift,
+                                 std::vector<VECTYPE>& m_adam,
+                                 std::vector<VECTYPE>& v_adam,
+                                 int t)
  {
 
     int m = directions.size();
@@ -444,8 +447,20 @@ inline void slicedOptimalTransportBatch_image_based(std::vector<VECTYPE>& points
         for (int k = 0; k < m; ++k) {
             sh += shift[k][i] * directions[k];
         }
-        finalShift[i] = sh;
-        finalShift[i] /= m;
+        for (int k = 0; k < finalShift[i].dim(); ++k) {
+            double grad = (sh[k]/m)*-1;
+            double lr =0.0008;//8.6, 0.005
+            double B1 = 0.9;
+            double B2 = 0.99;
+            double epsilon = 0.0001;
+            m_adam[i][k] = B1*m_adam[i][k]+(1-B1)*grad;
+            v_adam[i][k] = B2*v_adam[i][k]+(1-B2)*std::pow(grad,2);
+            double m_hat = m_adam[i][k]/(1-std::pow(B1,t));
+            double v_hat = v_adam[i][k]/(1-std::pow(B2,t));
+            finalShift[i][k] = -1*lr*m_hat/(std::sqrt(v_hat)+epsilon);
+        }
+        //finalShift[i] = sh;
+        //finalShift[i] /= m;
     }
 
     //Displace points according to accumulated shift
@@ -495,6 +510,8 @@ inline void slicedOptimalTransportNImageBased(const std::vector<VECTYPE>& points
     //Accumulation shift to be applied later on
     std::vector<std::vector<double>> shift(m, std::vector<double>(pointsOut.size()));
     std::vector<VECTYPE> finalShift(pointsOut.size(), VECTYPE(N));
+    std::vector<VECTYPE> m_adam(pointsOut.size(), VECTYPE(N));
+    std::vector<VECTYPE> v_adam(pointsOut.size(), VECTYPE(N));
 
     std::vector<VECTYPE> directions(m, VECTYPE(N));
 
@@ -505,7 +522,7 @@ inline void slicedOptimalTransportNImageBased(const std::vector<VECTYPE>& points
         }
         chooseDirectionsND(directions, m, seed);
 
-        slicedOptimalTransportBatch_image_based(pointsOut, directions, shift, finalShift);
+        slicedOptimalTransportBatch_image_based(pointsOut, directions, shift, finalShift,m_adam,v_adam,i+1);
     }
     print_progress(1.0);
 
